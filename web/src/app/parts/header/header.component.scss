@@ -1,0 +1,9 @@
+.menu {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+
+  .mat-list-item {
+    width: 64px;
+  }
+}

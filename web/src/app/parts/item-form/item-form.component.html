@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>
+    <form [formGroup]="form" class="form" id="item-form">
+        <div>
+            <mat-form-field>
+                <mat-label>Nazwa</mat-label>
+                <input formControlName="name" id="name" matInput type="text"/>
+                <mat-error *ngIf="form.get('name')?.invalid">
+                    Nazwa jest wymagana!
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Data Księgowania</mat-label>
+                <input (dateChange)="update()" [matDatepicker]="picker" [max]="currentDate" formControlName="date" id="date"
+                       matInput/>
+                <mat-datepicker-toggle [for]="picker" matIconSuffix></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="form.get('date')?.invalid">
+                    Data jest wymagana!
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field floatLabel="always">
+                <mat-label>Kwota USD</mat-label>
+                <input (input)="update()" formControlName="usd" id="usd" matInput placeholder="0" type="number"/>
+                <span matTextSuffix>&nbsp;$</span>
+                <mat-error *ngIf="form.get('usd')?.invalid">
+                    Kwota jest wymagana!
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field floatLabel="always">
+                <mat-label>Kwota PLN</mat-label>
+                <input [(ngModel)]="pln" [ngModelOptions]="{standalone: true}" id="pln" matInput readonly
+                       type="number"/>
+                <span matTextSuffix>&nbsp;zł</span>
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button (click)="onNoClick()" mat-button>Anuluj</button>
+    <button [mat-dialog-close]="result()" cdkFocusInitial mat-button>OK</button>
+</mat-dialog-actions>
