@@ -289,7 +289,7 @@ export class ItemListComponent implements OnInit {
       }
     },).afterClosed().subscribe((data: ItemFormResult | undefined) => {
       if (data) {
-        this.client.post<Item>("/api/items", data).subscribe(item => {
+        this.client.post<Item>("/api/items", data).subscribe(() => {
           this.load()
         })
       }
