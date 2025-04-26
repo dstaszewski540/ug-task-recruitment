@@ -276,13 +276,6 @@ export class ItemListComponent implements OnInit {
 
   }
 
-  private rawStringParse(date: Date | null): string | undefined {
-    let v = date
-    v?.setUTCHours(0)
-    v?.setUTCDate(v?.getUTCDate() + 1)
-    return v?.toISOString()?.substring(0, 10);
-  }
-
   filterStartDate(event: MatDatepickerInputEvent<ExtractDateTypeFromSelection<DateRange<Date>>, DateRange<Date>>) {
     const value = this.rawStringParse(event.value);
     const filter = JSON.parse(this.items.filter);
@@ -346,6 +339,13 @@ export class ItemListComponent implements OnInit {
         })
       }
     })
+  }
+
+  private rawStringParse(date: Date | null): string | undefined {
+    let v = date
+    v?.setUTCHours(0)
+    v?.setUTCDate(v?.getUTCDate() + 1)
+    return v?.toISOString()?.substring(0, 10);
   }
 }
 
