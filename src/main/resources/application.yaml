@@ -11,22 +11,13 @@ spring:
       date-time: iso
   application:
     name: Currency Exchange
-  data:
-    rest:
-      base-path: /api
-      max-page-size: 100
-      default-page-size: 20
-      default-media-type: application/xml
-      return-body-on-create: true
-      return-body-on-update: true
   jpa:
     show-sql: true
     database: h2
     hibernate:
       ddl-auto: update
   datasource:
-    url: jdbc:h2:file:./app
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:./app # leaving this for creating H2 database samples, otherwise put some configuration following by README file
 server:
   error:
     include-message: always

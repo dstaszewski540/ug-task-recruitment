@@ -30,7 +30,7 @@ public interface Items extends JpaRepository<Item, Long> {
      *
      * @param dateBefore start accounting date
      * @param dateAfter  end accounting date
-     * @param p                 pagination
+     * @param p          pagination
      * @return items
      */
     Page<Item> findByDateIsBetween(LocalDate dateAfter, LocalDate dateBefore, Pageable p);
@@ -39,10 +39,10 @@ public interface Items extends JpaRepository<Item, Long> {
      * Search by name and account date
      * QUERY: {@code SELECT * FROM Item WHERE LOWER(name) LIKE LOWER(CONCAT('%', :name, '%')) AND date is between :dateAfter and :dateBefore}
      *
-     * @param name              query
+     * @param name       query
      * @param dateBefore start accounting date
      * @param dateAfter  end accounting date
-     * @param p                 pagination
+     * @param p          pagination
      * @return requested items
      */
     Page<Item> findByNameIsContainingIgnoreCaseAndDateIsBetween(String name, LocalDate dateAfter, LocalDate dateBefore, Pageable p);

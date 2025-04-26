@@ -22,7 +22,6 @@ import pl.edu.ug.task.service.CurrencyExchange;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * REST controller for {@link Item} entity
@@ -49,17 +48,17 @@ public class RestItemController {
     @CrossOrigin
     @GetMapping
     public ResponseEntity<Page<Item>> fetch(@RequestParam(value = "query", required = false) String query,
-                            @RequestParam(value = "start_date", required = false)
-                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                            @RequestParam(value = "end_date", required = false)
-                                @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                            @RequestParam(value = "limit", defaultValue = "20")
-                                @Min(5) @Max(100) int limit,
-                            @RequestParam(value = "page", defaultValue = "1")
-                                @Min(1) int page,
-                            @RequestParam(value = "sort_by", defaultValue = "name") String sort,
-                            @RequestParam(value = "sort_direction", defaultValue = "ASC")
-                                Sort.Direction direction
+                                            @RequestParam(value = "start_date", required = false)
+                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                            @RequestParam(value = "end_date", required = false)
+                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                            @RequestParam(value = "limit", defaultValue = "20")
+                                            @Min(5) @Max(100) int limit,
+                                            @RequestParam(value = "page", defaultValue = "1")
+                                            @Min(1) int page,
+                                            @RequestParam(value = "sort_by", defaultValue = "name") String sort,
+                                            @RequestParam(value = "sort_direction", defaultValue = "ASC")
+                                            Sort.Direction direction
     ) {
         try {
             Sort s = Sort.by(direction, sort);
@@ -106,7 +105,8 @@ public class RestItemController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Item> get(@PathVariable("id") long id) {
         try {
-            return ResponseEntity.of(items.findById(id));
+            return items.findById(id).map(ResponseEntity::ok)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item " + id + " not found"));
         } catch (Exception e) {
             log.error("Error occurred while fetching item", e);
             return handleError(e);
