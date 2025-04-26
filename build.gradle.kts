@@ -29,8 +29,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web") // base of spring boot web with reactive streams
     implementation("org.springframework.boot:spring-boot-starter-validation") // using validation data
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf") // using Thymeleaf Templates
-    runtimeOnly("org.springframework.boot:spring-boot-starter-actuator")
-    runtimeOnly("com.h2database:h2") // for this project, I'm going to use an H2 database
+    runtimeOnly("org.springframework.boot:spring-boot-starter-actuator") // for debugging in IDE
+    implementation("com.h2database:h2")
+    implementation("com.mysql:mysql-connector-j")
+    implementation("org.postgresql:postgresql")
+    implementation("com.microsoft.sqlserver:mssql-jdbc")
     testImplementation("org.springframework.boot:spring-boot-starter-test")// for testing spring endpoints
     testImplementation("io.rest-assured:rest-assured")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher") // JUnit 5
