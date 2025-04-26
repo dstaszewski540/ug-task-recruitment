@@ -29,7 +29,6 @@ import java.time.LocalDate;
  * @author Damian Staszewski
  */
 @Slf4j
-@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/items")
@@ -46,8 +45,8 @@ public class RestItemController {
      * @param sort      sorting by name or accounting date. or booth
      * @return items in JSON format
      */
-    @GetMapping
     @CrossOrigin
+    @GetMapping
     public ResponseEntity<Page<Item>> fetch(@RequestParam(value = "query", required = false) String query,
                                             @RequestParam(value = "start_date", required = false)
                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -85,8 +84,8 @@ public class RestItemController {
         }
     }
 
-    @PostMapping
     @CrossOrigin
+    @PostMapping
     public ResponseEntity<Item> create(@Valid @RequestBody ItemCreateRequest body) {
         try {
             Item i = new Item();
