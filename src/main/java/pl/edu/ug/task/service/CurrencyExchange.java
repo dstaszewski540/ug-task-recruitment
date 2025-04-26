@@ -26,7 +26,7 @@ public class CurrencyExchange {
      * @return PLN amount
      */
     public double exchangeTo(double usd, LocalDate date) {
-        return Math.round((usd * getRate("USD", date).getRates()[0].getBid()) * 100.0) / 100.0;
+        return Math.round(Math.ceil(usd * getRate("USD", date).getRates()[0].getBid() * 100.0)) / 100.0;
     }
 
     /**
