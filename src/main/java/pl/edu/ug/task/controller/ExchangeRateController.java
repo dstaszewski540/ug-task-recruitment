@@ -33,7 +33,6 @@ public class ExchangeRateController {
      * @param date exchange date
      * @return exchange rate
      */
-    @CrossOrigin
     @GetMapping(value = "/api/exchange/{code}/{date}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Rate exchange(@PathVariable String code, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return exchange.getRate(code, date).getRates()[0];

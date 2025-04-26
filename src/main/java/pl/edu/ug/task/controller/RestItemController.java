@@ -45,7 +45,6 @@ public class RestItemController {
      * @param sort      sorting by name or accounting date. or booth
      * @return items in JSON format
      */
-    @CrossOrigin
     @GetMapping
     public ResponseEntity<Page<Item>> fetch(@RequestParam(value = "query", required = false) String query,
                                             @RequestParam(value = "start_date", required = false)
@@ -84,7 +83,6 @@ public class RestItemController {
         }
     }
 
-    @CrossOrigin
     @PostMapping
     public ResponseEntity<Item> create(@Valid @RequestBody ItemCreateRequest body) {
         try {
@@ -101,7 +99,6 @@ public class RestItemController {
         }
     }
 
-    @CrossOrigin
     @GetMapping(value = "/{id}")
     public ResponseEntity<Item> get(@PathVariable("id") long id) {
         try {
@@ -113,7 +110,6 @@ public class RestItemController {
         }
     }
 
-    @CrossOrigin
     @PatchMapping(value = "/{id}")
     public ResponseEntity<Item> update(@PathVariable("id") long id, @RequestBody ItemCreateRequest body) {
         try {

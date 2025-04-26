@@ -2,6 +2,7 @@
 
 * [ ] Pagination for better experience
 * [ ] Query Filtering by API — currently use: local querying and filtering
+* [ ] Test Unit for frontend
 
 # Backend
 

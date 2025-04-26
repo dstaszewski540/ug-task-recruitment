@@ -4,7 +4,8 @@ import {
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
-  MatDialogRef, MatDialogTitle
+  MatDialogRef,
+  MatDialogTitle
 } from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
 

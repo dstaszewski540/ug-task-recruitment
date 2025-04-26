@@ -1,10 +1,14 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {Item, Items} from "../../item";
+import {Item, Page} from "../../item";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {
   MatCell,
   MatCellDef,
-  MatColumnDef, MatFooterCell, MatFooterCellDef, MatFooterRow, MatFooterRowDef,
+  MatColumnDef,
+  MatFooterCell,
+  MatFooterCellDef,
+  MatFooterRow,
+  MatFooterRowDef,
   MatHeaderCell,
   MatHeaderCellDef,
   MatHeaderRow,
@@ -24,7 +28,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ItemBulkDeleteComponent} from "../item-bulk-delete/item-bulk-delete.component";
 import {ItemFormComponent, ItemFormResult} from "../item-form/item-form.component";
 import {ItemDeleteComponent} from "../item-delete/item-delete.component";
-import {DatePipe, NgIf} from "@angular/common";
+import {DatePipe} from "@angular/common";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {MatSort, MatSortHeader} from "@angular/material/sort";
 import {XmlComposer} from "../../xml-composer";
@@ -38,6 +42,7 @@ import {
 } from "@angular/material/datepicker";
 import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from "@angular/material/core";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 @Component({
   selector: 'app-item-list',
@@ -65,9 +70,7 @@ import {MAT_DATE_LOCALE, provideNativeDateAdapter} from "@angular/material/core"
     MatRowDef,
     MatHeaderRowDef,
     MatLabel,
-    NgIf,
     MatPaginator,
-    MatButton,
     MatSortHeader,
     MatSort,
     MatToolbar,
@@ -82,7 +85,9 @@ import {MAT_DATE_LOCALE, provideNativeDateAdapter} from "@angular/material/core"
     MatFooterRow,
     MatFooterRowDef,
     MatFooterCell,
-    MatFooterCellDef
+    MatFooterCellDef,
+    MatProgressSpinner,
+    MatButton
   ],
   templateUrl: './item-list.component.html',
   styleUrl: './item-list.component.scss'
@@ -100,6 +105,7 @@ export class ItemListComponent implements OnInit {
     start_date: undefined,
     end_date: undefined,
   }
+  preload = true;
 
   readonly client = inject(HttpClient)
   readonly dateRange = new FormGroup({
@@ -112,6 +118,7 @@ export class ItemListComponent implements OnInit {
   }
 
   load() {
+    this.preload = true;
     const params = new HttpParams()
     params.set("limit", this.params.limit.toString())
     params.set("page", this.params.page.toString())
@@ -130,10 +137,17 @@ export class ItemListComponent implements OnInit {
     if (this.params.end_date) {
       params.set("end_date", this.params.end_date.toISOString().substring(0, 10))
     }
-    this.client.get<Items>("http://localhost:8080/api/items", {
+    this.client.get<Page<Item>>("/api/items", {
       params: params,
-    }).subscribe(res => {
-      this.items.data = res;
+    }).subscribe({
+      next: res => {
+        this.items.data = res.content;
+        this.preload = false;
+      },
+      error: err => {
+        console.error(err);
+        this.preload = false;
+      }
     });
   }
 
@@ -145,13 +159,13 @@ export class ItemListComponent implements OnInit {
         if (value) {
           const count = this.selection.selected.length;
           this.selection.selected.forEach((item, i) => {
-            this.client.delete("http://localhost:8080/api/items/" + item.id).subscribe(() => {
+            this.client.delete(`/api/items/${item.id}`).subscribe(() => {
               this.selection.toggle(item)
               const idx = this.items.data.indexOf(item);
               if (idx >= 0) {
                 this.items.data.splice(idx, 1);
               }
-              if (i === this.selection.selected.length - 1) {
+              if (i === count - 1) {
                 this.load();
               }
             })
@@ -174,7 +188,7 @@ export class ItemListComponent implements OnInit {
     return this.selection.selected.length === this.items.data.length;
   }
 
-  checkboxLabel(row?: Item): string {
+  checkboxLabel(row ?: Item): string {
     if (!row) {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
@@ -210,7 +224,7 @@ export class ItemListComponent implements OnInit {
       }
     }).afterClosed().subscribe((data: ItemFormResult | undefined) => {
       if (data) {
-        this.client.patch<Item>("http://localhost:8080/api/items/" + item.id, data).subscribe(item => {
+        this.client.patch<Item>(`/api/items/${item.id}`, data).subscribe(item => {
           this.items.data = this.items.data.map(i => i.id === item.id ? item : i)
         })
       }
@@ -226,7 +240,7 @@ export class ItemListComponent implements OnInit {
       data: item.name,
     }).afterClosed().subscribe((data: boolean) => {
       if (data) {
-        this.client.delete("http://localhost:8080/api/items/" + item.id).subscribe(() => {
+        this.client.delete(`/api/items/${item.id}`).subscribe(() => {
           this.load()
         })
       }
@@ -252,16 +266,16 @@ export class ItemListComponent implements OnInit {
 
   sumUSD() {
     if (this.selection.hasValue()) {
-      return this.selection.selected.reduce((acc, item) => acc + item.usd, 0)
+      return this.toUSD(this.selection.selected.reduce((acc, item) => acc + item.usd, 0))
     }
-    return this.items.data.reduce((acc, item) => acc + item.usd, 0);
+    return this.toUSD(this.items.data.reduce((acc, item) => acc + item.usd, 0));
   }
 
   sumPLN() {
     if (this.selection.hasValue()) {
-      return this.selection.selected.reduce((acc, item) => acc + item.pln, 0)
+      return this.toPLN(this.selection.selected.reduce((acc, item) => acc + item.pln, 0))
     }
-    return this.items.data.reduce((acc, item) => acc + item.pln, 0);
+    return this.toPLN(this.items.data.reduce((acc, item) => acc + item.pln, 0));
   }
 
   add() {
@@ -275,7 +289,7 @@ export class ItemListComponent implements OnInit {
       }
     },).afterClosed().subscribe((data: ItemFormResult | undefined) => {
       if (data) {
-        this.client.post<Item>("http://localhost:8080/api/items", data).subscribe(item => {
+        this.client.post<Item>("/api/items", data).subscribe(item => {
           this.load()
         })
       }

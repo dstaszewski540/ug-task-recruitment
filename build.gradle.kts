@@ -43,10 +43,10 @@ tasks {
     withType<Test> {
         useJUnitPlatform()
     }
-//    processResources {
-//        dependsOn(":web:build")
-//    }
-//    clean {
-//        dependsOn(":web:clean")
-//    }
+    processResources {
+        dependsOn(":web:build")
+    }
+    clean {
+        dependsOn(":web:clean")
+    }
 }

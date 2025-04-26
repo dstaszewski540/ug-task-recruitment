@@ -1,79 +1,92 @@
 <div class="container">
-  <mat-toolbar color="primary" class="toolbar">
-    <mat-form-field class="search field">
-      <mat-label>Znajdź po nazwie</mat-label>
-      <input #input (keyup)="filterQuery($event)" matInput placeholder="np. ACER"/>
-    </mat-form-field>
-    <mat-form-field class="date-range field">
-      <mat-label>Zakres dat</mat-label>
-      <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Początek">
-        <input matEndDate formControlName="end" placeholder="Koniec">
-      </mat-date-range-input>
-      <mat-hint>DD.MM.YYYY – DD.MM.YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-      @if (dateRange.controls.start.hasError('matStartDateInvalid')) {
-        <mat-error>Data początkowa jest nieprawidłowa!</mat-error>
-      }
-      @if (dateRange.controls.end.hasError('matEndDateInvalid')) {
-        <mat-error>Data końcowa jest nieprawidłowa!</mat-error>
-      }
-    </mat-form-field>
-  </mat-toolbar>
-  <mat-table [dataSource]="items" matSort>
-    <ng-container matColumnDef="select">
-      <mat-header-cell *matHeaderCellDef>
-        <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                      [aria-label]="checkboxLabel()"
-                      [checked]="selection.hasValue() && isAllSelected()"
-                      [indeterminate]="selection.hasValue() && !isAllSelected()"
-        ></mat-checkbox>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let item">
-        <mat-checkbox (change)="$event ? selection.toggle(item) : null"
-                      (click)="$event.stopPropagation()"
-                      [aria-label]="checkboxLabel(item)"
-                      [checked]="selection.isSelected(item)"
-        ></mat-checkbox>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Nazwa</mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ item.name }}</mat-cell>
-      <mat-footer-cell *matFooterCellDef [attr.colspan]="3">Suma</mat-footer-cell>
-    </ng-container>
-    <ng-container matColumnDef="date">
-      <mat-header-cell *matHeaderCellDef mat-header-cell mat-sort-header>Data Księgowania</mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ item.date | date:'dd.MM.yyyy' }}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="usd">
-      <mat-header-cell *matHeaderCellDef>Cena w USD</mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ toUSD(item.usd) }}</mat-cell>
-      <mat-footer-cell>{{ sumUSD() }}</mat-footer-cell>
-    </ng-container>
-    <ng-container matColumnDef="pln">
-      <mat-header-cell *matHeaderCellDef>Cena w PLN</mat-header-cell>
-      <mat-cell *matCellDef="let item">{{ toPLN(item.pln) }}</mat-cell>
-      <mat-footer-cell>{{ sumPLN() }}</mat-footer-cell>
-    </ng-container>
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef>
-        <p>Akcje</p>
-      </mat-header-cell>
-      <mat-cell *matCellDef="let item">
-        <button (click)="edit(item)" mat-icon-button>
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button (click)="delete(item)" mat-icon-button>
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-cell>
-      <mat-footer-cell *matFooterCellDef>
+  @if (preload) {
+    <mat-spinner class="center"></mat-spinner>
+  } @else if (items.data.length > 0) {
+    <mat-toolbar color="primary" class="toolbar">
+      <div class="center">
+        <mat-form-field class="search field">
+          <mat-label>Znajdź po nazwie</mat-label>
+          <input #input (keyup)="filterQuery($event)" matInput placeholder="np. ACER"/>
+        </mat-form-field>
+        <mat-form-field class="date-range field">
+          <mat-label>Zakres dat</mat-label>
+          <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
+            <input matStartDate formControlName="start" placeholder="Początek">
+            <input matEndDate formControlName="end" placeholder="Koniec">
+          </mat-date-range-input>
+          <mat-hint>DD.MM.YYYY – DD.MM.YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+          @if (dateRange.controls.start.hasError('matStartDateInvalid')) {
+            <mat-error>Data początkowa jest nieprawidłowa!</mat-error>
+          }
+          @if (dateRange.controls.end.hasError('matEndDateInvalid')) {
+            <mat-error>Data końcowa jest nieprawidłowa!</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </mat-toolbar>
+    <mat-table [dataSource]="items" matSort>
+      <ng-container matColumnDef="select">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                        [aria-label]="checkboxLabel()"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+          ></mat-checkbox>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let item">
+          <mat-checkbox (change)="$event ? selection.toggle(item) : null"
+                        (click)="$event.stopPropagation()"
+                        [aria-label]="checkboxLabel(item)"
+                        [checked]="selection.isSelected(item)"
+          ></mat-checkbox>
+          <mat-footer-cell *matFooterCellDef>Suma</mat-footer-cell>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Nazwa</mat-header-cell>
+        <mat-cell *matCellDef="let item">{{ item.name }}</mat-cell>
+        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef mat-header-cell mat-sort-header>Data Księgowania</mat-header-cell>
+        <mat-cell *matCellDef="let item">{{ item.date | date:'dd.MM.yyyy' }}</mat-cell>
+        <mat-footer-cell *matFooterCellDef class="total">
+          @if (selection.hasValue()) {
+            Zaznaczonych
+          } Razem
+        </mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="usd">
+        <mat-header-cell *matHeaderCellDef>Cena w USD</mat-header-cell>
+        <mat-cell *matCellDef="let item">{{ toUSD(item.usd) }}</mat-cell>
+        <mat-footer-cell *matFooterCellDef class="total">{{ sumUSD() }}</mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="pln">
+        <mat-header-cell *matHeaderCellDef>Cena w PLN</mat-header-cell>
+        <mat-cell *matCellDef="let item">{{ toPLN(item.pln) }}</mat-cell>
+        <mat-footer-cell *matFooterCellDef class="total">{{ sumPLN() }}</mat-footer-cell>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef>
+          <p>Akcje</p>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let item">
+          <button (click)="edit(item)" mat-icon-button>
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button (click)="delete(item)" mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef>
           <button (click)="add()" mat-icon-button aria-label="Nowy wpis">
             <mat-icon>add</mat-icon>
           </button>
-          <button (click)="xmlExport()" [disabled]="!selection.hasValue()" mat-icon-button aria-label="Zapisz do XML">
+          <button (click)="xmlExport()" [disabled]="!selection.hasValue()" mat-icon-button
+                  aria-label="Zapisz do XML">
             <mat-icon>save</mat-icon>
           </button>
           <button (click)="bulkDelete()" [disabled]="!selection.hasValue()" mat-icon-button aria-label="Usuń wybrane">
@@ -82,13 +95,22 @@
           <button (click)="selection.clear()" [disabled]="!selection.hasValue()" mat-icon-button aria-label="Wyczyść">
             <mat-icon>clear</mat-icon>
           </button>
-      </mat-footer-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="['select', 'name', 'date', 'usd', 'pln', 'actions']"></mat-header-row>
-    <mat-row *matRowDef="let item; columns: ['select', 'name', 'date', 'usd', 'pln', 'actions'];"></mat-row>
-    <mat-footer-row *matFooterRowDef="['actions']"></mat-footer-row>
-  </mat-table>
-  <mat-paginator (page)="loadPage($event)" [length]="items.data.length" [pageIndex]="params.page - 1"
-                 [pageSizeOptions]="[10, 20, 50, 100]" [pageSize]="params.limit"
-                 aria-label="Select page of users"></mat-paginator>
+        </mat-footer-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="['select', 'name', 'date', 'usd', 'pln', 'actions']"></mat-header-row>
+      <mat-row *matRowDef="let item; columns: ['select', 'name', 'date', 'usd', 'pln', 'actions'];"></mat-row>
+      <mat-footer-row *matFooterRowDef="['select', 'name', 'date', 'usd', 'pln', 'actions']"></mat-footer-row>
+    </mat-table>
+    <mat-paginator (page)="loadPage($event)" [length]="items.data.length" [pageIndex]="params.page - 1"
+                   [pageSizeOptions]="[10, 20, 50, 100]" [pageSize]="params.limit"
+                   aria-label="Select page of users"></mat-paginator>
+  } @else {
+    <div class="center">
+      <p>Brak danych.</p>
+      <button mat-button (click)="load()">
+        <mat-icon>refresh</mat-icon>
+        Odśwież
+      </button>
+    </div>
+  }
 </div>

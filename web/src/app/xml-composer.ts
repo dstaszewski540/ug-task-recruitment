@@ -1,5 +1,4 @@
 import {Items} from "./item";
-import {XmlParser} from "@angular/compiler";
 
 export class XmlComposer {
   static export(items: Items) {
