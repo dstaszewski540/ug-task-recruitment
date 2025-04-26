@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Pomoc</h2>
+<mat-dialog-content>
+  <mat-table [dataSource]="items">
+    <ng-container matColumnDef="icon">
+      <mat-header-cell *matHeaderCellDef>Ikona</mat-header-cell>
+      <mat-cell *matCellDef="let item">
+        <mat-icon>{{ item.icon }}</mat-icon>
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="description">
+      <mat-header-cell *matHeaderCellDef>Opis</mat-header-cell>
+      <mat-cell *matCellDef="let item">{{ item.description }}</mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="['icon', 'description']"></mat-header-row>
+    <mat-row *matRowDef="let item; columns: ['icon', 'description'];"></mat-row>
+  </mat-table>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Zamknij</button>
+</mat-dialog-actions>
