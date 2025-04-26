@@ -11,8 +11,8 @@
         <mat-form-field class="date-range field">
           <mat-label>Zakres dat</mat-label>
           <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker">
-            <input matStartDate formControlName="start" placeholder="Początek">
-            <input matEndDate formControlName="end" placeholder="Koniec">
+            <input matStartDate formControlName="start" placeholder="Początek" [max]="currentDate" (dateInput)="filterStartDate($event)">
+            <input matEndDate formControlName="end" placeholder="Koniec" [max]="currentDate" (dateInput)="filterEndDate($event)">
           </mat-date-range-input>
           <mat-hint>DD.MM.YYYY – DD.MM.YYYY</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>

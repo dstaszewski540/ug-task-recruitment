@@ -29,6 +29,7 @@ import java.time.LocalDate;
  * @author Damian Staszewski
  */
 @Slf4j
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/items")
@@ -46,6 +47,7 @@ public class RestItemController {
      * @return items in JSON format
      */
     @GetMapping
+    @CrossOrigin
     public ResponseEntity<Page<Item>> fetch(@RequestParam(value = "query", required = false) String query,
                                             @RequestParam(value = "start_date", required = false)
                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -84,6 +86,7 @@ public class RestItemController {
     }
 
     @PostMapping
+    @CrossOrigin
     public ResponseEntity<Item> create(@Valid @RequestBody ItemCreateRequest body) {
         try {
             Item i = new Item();
@@ -99,6 +102,7 @@ public class RestItemController {
         }
     }
 
+    @CrossOrigin
     @GetMapping(value = "/{id}")
     public ResponseEntity<Item> get(@PathVariable("id") long id) {
         try {
@@ -110,6 +114,7 @@ public class RestItemController {
         }
     }
 
+    @CrossOrigin
     @PatchMapping(value = "/{id}")
     public ResponseEntity<Item> update(@PathVariable("id") long id, @RequestBody ItemCreateRequest body) {
         try {

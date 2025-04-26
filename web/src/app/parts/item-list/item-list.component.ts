@@ -34,6 +34,9 @@ import {MatSort, MatSortHeader} from "@angular/material/sort";
 import {XmlComposer} from "../../xml-composer";
 import {MatToolbar} from "@angular/material/toolbar";
 import {
+  DateRange,
+  ExtractDateTypeFromSelection,
+  MatDatepickerInputEvent,
   MatDatepickerToggle,
   MatDateRangeInput,
   MatDateRangePicker,
@@ -112,8 +115,34 @@ export class ItemListComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
+  readonly currentDate = new Date(Date.now());
 
   ngOnInit() {
+    this.items.filterPredicate = (data: any, filter): boolean => {
+      const query = JSON.parse(filter);
+      let isSet = true;
+      for (let col in query) {
+        switch (col) {
+          case "date":
+            if (query[col].start || query[col].end) {
+              const start = query[col].start ? new Date(Date.parse(query[col].start)) : null
+              const end = query[col].end ? new Date(Date.parse(query[col].end)) : null
+              const current = new Date(Date.parse(data[col].toString()))
+
+              let startOk = (start) ? current >= start : true;
+              let endOk = (end) ? current <= end : true;
+              isSet = isSet && (startOk && endOk);
+            }
+            break;
+          case"name":
+            let nameValue = !query[col] || data[col].toString().toLowerCase().includes(query[col].toString().trim().toLowerCase());
+            isSet = isSet && nameValue;
+            break;
+        }
+      }
+      return isSet;
+    }
+    this.items.filter = JSON.stringify({date: {start: undefined, end: undefined}, name: undefined});
     this.load();
   }
 
@@ -145,7 +174,6 @@ export class ItemListComponent implements OnInit {
         this.preload = false;
       },
       error: err => {
-        console.error(err);
         this.preload = false;
       }
     });
@@ -248,8 +276,32 @@ export class ItemListComponent implements OnInit {
 
   }
 
-  filterQuery(event: KeyboardEvent) {
+  private rawStringParse(date: Date | null): string | undefined {
+    let v = date
+    v?.setUTCHours(0)
+    v?.setUTCDate(v?.getUTCDate() + 1)
+    return v?.toISOString()?.substring(0, 10);
+  }
 
+  filterStartDate(event: MatDatepickerInputEvent<ExtractDateTypeFromSelection<DateRange<Date>>, DateRange<Date>>) {
+    const value = this.rawStringParse(event.value);
+    const filter = JSON.parse(this.items.filter);
+    filter.date.start = value;
+    this.items.filter = JSON.stringify(filter);
+  }
+
+  filterEndDate(event: MatDatepickerInputEvent<ExtractDateTypeFromSelection<DateRange<Date>>, DateRange<Date>>) {
+    const value = this.rawStringParse(event.value);
+    const filter = JSON.parse(this.items.filter);
+    filter.date.end = value;
+    this.items.filter = JSON.stringify(filter);
+  }
+
+  filterQuery(event: KeyboardEvent) {
+    const value = (event.target as HTMLInputElement).value;
+    const filter = JSON.parse(this.items.filter);
+    filter.name = value;
+    this.items.filter = JSON.stringify(filter);
   }
 
   xmlExport() {
