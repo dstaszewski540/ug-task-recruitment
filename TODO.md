@@ -8,18 +8,18 @@
 
 # Backend
 
-* [ ] Filter by API
-* [ ] Pagination by API
+* [x] Filter by API
+* [x] Pagination by API
 
 # DevOps
 
-* [ ] `Dockerfile` for container
-* [ ] GitHub Actions for testing and deployment
+* [x] `Dockerfile` for container
+* [x] GitHub Actions for testing and deployment
 * [ ] `docker-compose.yaml` sample for deployment
 
 # General
 
-* [ ] Use SCRUM or Agile methodology
+* [ ] ~~Use SCRUM or Agile methodology~~
 * [ ] Use DYI methodology (MOSTLY MUST BE)
 
 # My personal opinion
@@ -27,4 +27,4 @@
 * [ ] Could use JavaFX for a better experience
 * [ ] Trying to use Spring Boot for JavaFX without any Servlet solutions
 * [ ] Could use JDBC instead of JPA provided by Spring Data JPA
-* [ ] Stay code clean standards - not enough hygienic probably
+* [ ] Stay code clean standards - not enough hygienics probably
