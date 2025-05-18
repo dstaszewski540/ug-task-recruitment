@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedModel;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -47,17 +48,17 @@ public class RestItemController {
      */
     @CrossOrigin
     @GetMapping
-    public ResponseEntity<Page<Item>> fetch(@RequestParam(value = "query", required = false) String query,
-                                            @RequestParam(value = "start_date", required = false)
+    public ResponseEntity<PagedModel<Item>> fetch(@RequestParam(value = "query", required = false) String query,
+                                                  @RequestParam(value = "start_date", required = false)
                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                            @RequestParam(value = "end_date", required = false)
+                                                  @RequestParam(value = "end_date", required = false)
                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                            @RequestParam(value = "limit", defaultValue = "20")
+                                                  @RequestParam(value = "limit", defaultValue = "20")
                                             @Min(5) @Max(100) int limit,
-                                            @RequestParam(value = "page", defaultValue = "1")
+                                                  @RequestParam(value = "page", defaultValue = "1")
                                             @Min(1) int page,
-                                            @RequestParam(value = "sort_by", defaultValue = "name") String sort,
-                                            @RequestParam(value = "sort_direction", defaultValue = "ASC")
+                                                  @RequestParam(value = "sort_by", defaultValue = "name") String sort,
+                                                  @RequestParam(value = "sort_direction", defaultValue = "ASC")
                                             Sort.Direction direction
     ) {
         try {
@@ -77,7 +78,7 @@ public class RestItemController {
                     items = this.items.findAll(p);
                 }
             }
-            return ResponseEntity.ok(items);
+            return ResponseEntity.ok(new PagedModel<>(items));
         } catch (Exception e) {
             log.error("Error occurred while fetching items", e);
             return handleError(e);
