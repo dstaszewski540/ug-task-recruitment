@@ -1,2 +1,2 @@
-rootProject.name = "ug-task-currency-exchange"
+rootProject.name = "ug-task"
 include(":web")
