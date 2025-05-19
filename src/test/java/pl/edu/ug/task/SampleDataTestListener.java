@@ -25,6 +25,7 @@ public class SampleDataTestListener implements ApplicationListener<ApplicationRe
 
     private Item first(CurrencyExchange exchange) {
         Item item = new Item();
+        item.setId(1L);
         item.setName("ACER Aspire");
         item.setDate(LocalDate.parse("2025-01-03"));
         item.setUsd(345);
@@ -34,6 +35,7 @@ public class SampleDataTestListener implements ApplicationListener<ApplicationRe
 
     private Item second(CurrencyExchange exchange) {
         Item item = new Item();
+        item.setId(2L);
         item.setName("DELL Latitude");
         item.setDate(LocalDate.parse("2025-01-10"));
         item.setUsd(543);
@@ -43,6 +45,7 @@ public class SampleDataTestListener implements ApplicationListener<ApplicationRe
 
     private Item third(CurrencyExchange exchange) {
         Item item = new Item();
+        item.setId(3L);
         item.setName("HP Victus");
         item.setDate(LocalDate.parse("2025-01-19"));
         item.setUsd(346);
